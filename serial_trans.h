@@ -38,4 +38,9 @@ void test_comm_trans(); // A test communication function. Somewhat similar to ju
 
 void setup_serial_trans(struct termios*, int*);
 
+typedef union serialized_data{
+	unsigned int com_int;
+	char com_char[4];
+} serial_data;
+
 #endif

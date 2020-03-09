@@ -71,17 +71,26 @@ void parse_input(int input)
 
 void req_pic_trans()
 {
+	serial_data data;
+        data.com_int = REQ_PIC;
+	int bytes_written =0;
+	tcflush(fd, TCIFLUSH);
+	bytes_written = write(fd, data.com_char, sizeof(data.com_char));
+
+	printf("\n %s written to TTYUSB0", data.com_char);
+	printf("\n %s Bytes written to ttyUSB0\n", bytes_written);
 }
 
 void test_comm_trans()
 {
-	char write_buff[] = "A";
+	serial_data data;
+	data.com_int = TEST_COMM;
 	tcflush(fd, TCIFLUSH);
 	int bytes_written = 0;
 
-	bytes_written = write(fd,write_buff, sizeof(write_buff));
+	bytes_written = write(fd,data.com_char, sizeof(data.com_char));
 
-	printf("\n %s written to TTYUSB0", write_buff);
+	printf("\n %s written to TTYUSB0", data.com_char);
 	printf("\n %d Bytes written to ttyUSB0", bytes_written);
 }
 
