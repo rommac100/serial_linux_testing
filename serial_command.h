@@ -39,4 +39,9 @@ void test_command(); //simple test_command function will output simple printf st
 void setup_serial_struct(struct termios*, int*); 
 
 int start_listener(char *); // takes serial_path as inpu
+
+typedef union serialized_data{
+	unsigned int com_int;
+	char com_char[4];
+} serial_data;
 #endif

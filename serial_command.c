@@ -11,7 +11,8 @@
 
 int main(int argc, char **argv)
 {
-	start_listener(XBEE_PATH);
+	start_listener(argc==2? argv[1] :XBEE_PATH);
+
 	return 0;
 }
 int start_listener(char *xbee_path)

@@ -24,6 +24,8 @@ int start_transmitter(char* xbee_path)
 		printf("\nError when opening ttyUSB1\n");
 		return 1;
 	}
+	else
+	{
 
 	struct termios port_config;
 	setup_serial_trans(&port_config, &fd);
@@ -47,6 +49,7 @@ int start_transmitter(char* xbee_path)
 		scanf(" %s", read_buffer);
 	}
 	close(fd);
+	}
 	return 0;
 }
 
