@@ -1,12 +1,48 @@
 #include "jpeg_writer.h"
 int main()
 {
-
-	export_image("test.jpg");	
+	jpg_data data;
+	open_jpg(TEST_FILE, &data);
+	write_jpg("test.jpg", &data);
+	free(data.bytes);
 }
 
-void export_image(char *path)
+void write_jpg(char * filename, jpg_data * data)
 {
-	XInfo_t xinfo = getXInfo(":0");
-	XImage* screen_shot = takeScreenshot(xinfo,path);
+	if (data->size > 0)
+	{
+	FILE *fp;
+	fp = fopen(filename, "w+");
+	if (fp)
+	{
+	int bytes_written = fwrite(data->bytes, sizeof(char), data->size,fp);
+	close(fp);
+	printf("\n Wrote %d bytes\n", bytes_written);
+	}
+	else
+	{
+		printf("\nunable to write file\n");
+	}	
+	}
+}
+
+void open_jpg(char * filename, jpg_data *data)
+{
+	FILE * fp;
+	long size;
+	fp = fopen(filename, "r");
+	if (fp)
+	{
+		printf("open file successfully\n");
+		fseek(fp, 0, SEEK_END);
+		size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		printf("size of file: %d\n", size);
+		data->bytes = malloc(sizeof(char)*size);
+		data->size = fread(data->bytes, sizeof(char), size, fp);
+		printf("size of data written to struct: %d\n", data->size);
+		close(fp);
+	}
+	else
+		printf("failed to open file");
 }

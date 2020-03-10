@@ -73,29 +73,32 @@ void req_pic_trans()
 {
 	serial_data data;
         data.com_int = REQ_PIC;
-	int bytes_written =0;
-	tcflush(fd, TCIFLUSH);
-	bytes_written = write(fd, data.com_char, sizeof(data.com_char));
-
-	printf("\n %s written to TTYUSB0", data.com_char);
-	printf("\n %s Bytes written to ttyUSB0\n", bytes_written);
+	send_4bit_command(&data);
 }
 
 void test_comm_trans()
 {
 	serial_data data;
 	data.com_int = TEST_COMM;
+	send_4bit_command(&data);
+}
+
+void send_4bit_command(serial_data * data)
+{
 	tcflush(fd, TCIFLUSH);
 	int bytes_written = 0;
 
-	bytes_written = write(fd,data.com_char, sizeof(data.com_char));
+	bytes_written = write(fd,data->com_char, sizeof(data->com_char));
 
-	printf("\n %s written to TTYUSB0", data.com_char);
+	printf("\n %s written to TTYUSB0", data->com_char);
 	printf("\n %d Bytes written to ttyUSB0", bytes_written);
 }
 
 void take_pic_trans()
 {
+	serial_data data;
+	data.com_int = TAKE_PIC;
+	send_4bit_command(&data);
 }
 
 void setup_serial_trans(struct termios* port_config, int* serial_port)

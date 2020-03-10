@@ -3,6 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <jpeglib.h>
-void export_image(char *);
+
+typedef struct jpg{
+	long size;
+	char *bytes;
+} jpg_data;
+
+void open_jpg(char *, jpg_data*);
+void write_jpg(char *, jpg_data*);
+
+
+#define TEST_FILE "test_serial_img.jpg"
+
 
 #endif

@@ -32,6 +32,7 @@ int fd; // global variable for serial buffer
 int start_transmitter(char*);
 void parse_input(int);
 
+
 void req_pic_trans();
 void take_pic_trans();
 void test_comm_trans(); // A test communication function. Somewhat similar to just asking for a model number of a device.
@@ -42,5 +43,7 @@ typedef union serialized_data{
 	unsigned int com_int;
 	char com_char[4];
 } serial_data;
+
+void send_4bit_command(serial_data *);
 
 #endif
