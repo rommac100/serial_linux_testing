@@ -11,9 +11,7 @@
 
 int main(int argc, char **argv)
 {
-	start_listener(argc==2? argv[1] :XBEE_PATH);
-
-	return 0;
+         return start_listener(argc==2? argv[1] :XBEE_PATH);
 }
 int start_listener(char *xbee_path)
 {
@@ -28,7 +26,10 @@ int start_listener(char *xbee_path)
 	struct termios port_config;
 	setup_serial_struct(&port_config, &fd);
 	if ((tcsetattr(fd,TCSANOW,&port_config)) !=0)
+	{
 		printf("\n Error ! in setttings desired attributes\n");
+		return 1;
+	}
 	else	
 		printf("\n BAUDRATE = B9600, \n Stop Bits = 1 \n Parity = none\n");
 	tcflush(fd, TCIFLUSH); // Discards teh old data in the Rx Buffer
@@ -46,6 +47,7 @@ int start_listener(char *xbee_path)
 		bytes_read  =read(fd,&read_buffer,3);
 	}
 	close(fd);
+	return 0;
 }
 
 void setup_serial_struct(struct termios* port_config, int* serial_port)
