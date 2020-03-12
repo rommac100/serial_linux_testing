@@ -10,10 +10,7 @@
 #include "serial_trans.h"
 
 int main(int argc, char **argv)
-{
- 	return start_transmitter(argc ==2 ? argv[1]:XBEE_PATH_TRANS);	
-}
-
+{ return start_transmitter(argc ==2 ? argv[1]:XBEE_PATH_TRANS);	}
 //returns 1 if an error occurs with either port_config or opening serial bus
 int start_transmitter(char* xbee_path)
 {
@@ -74,34 +71,43 @@ void parse_input(int input)
 
 void req_pic_trans()
 {
-	serial_data data;
-        data.com_int = REQ_PIC;
-	send_4bit_command(&data);
+	send_4bit_command(REQ_PIC);
 }
 
 void test_comm_trans()
 {
-	serial_data data;
-	data.com_int = TEST_COMM;
-	send_4bit_command(&data);
+	send_4bit_command(TEST_COMM);
 }
 
-void send_4bit_command(serial_data * data)
+void send_4bit_command(int data)
 {
 	tcflush(fd, TCIFLUSH);
 	int bytes_written = 0;
+	bytes_written = write(fd,conv_hex(data), DEFAULT_BUFFER_SIZE);
 
-	bytes_written = write(fd,data->com_char, sizeof(data->com_char));
-
-	printf("\n %s written to TTYUSB0", data->com_char);
+	printf("\n %s written to TTYUSB0", conv_hex(data));
 	printf("\n %d Bytes written to ttyUSB0", bytes_written);
 }
 
 void take_pic_trans()
 {
-	serial_data data;
-	data.com_int = TAKE_PIC;
-	send_4bit_command(&data);
+	send_4bit_command(TAKE_PIC);
+}
+
+// works only four 8bit numbers only so that the char arrays has a fixed sized for parsing later.
+char* conv_hex(int num)
+{
+	char *buffer = (char*)malloc(sizeof(char)*4);
+	if (num > 255)
+	{
+		free(buffer);
+		return '0x00';
+	}
+	else
+	{
+		sprintf(buffer,"0x%02X",num);
+		return buffer;
+	}
 }
 
 void setup_serial_trans(struct termios* port_config, int* serial_port)

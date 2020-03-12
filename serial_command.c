@@ -34,17 +34,17 @@ int start_listener(char *xbee_path)
 		printf("\n BAUDRATE = B9600, \n Stop Bits = 1 \n Parity = none\n");
 	tcflush(fd, TCIFLUSH); // Discards teh old data in the Rx Buffer
 
-	char read_buffer[3];
+	char read_buffer[DEFAULT_BUFFER_SIZE];
 	int bytes_read = 0;
 
-	bytes_read  =read(fd,&read_buffer,3);
+	bytes_read  =read(fd,&read_buffer,DEFAULT_BUFFER_SIZE);
 	while(atoi(read_buffer) != STOP_TRANS) 
 	{
-		printf("atoi value: %d\n",atoi(read_buffer));
+		printf("atoi value: %d\n",strtol(read_buffer, NULL,16));
 		printf("\n\n Bytes Rxed - %d  - Byte Value: <%s> \n\n",bytes_read, read_buffer);
-		parse_serial_command(atoi(read_buffer));
+		parse_serial_command(strtol(read_buffer,NULL,16));
 
-		bytes_read  =read(fd,&read_buffer,3);
+		bytes_read  =read(fd,&read_buffer,DEFAULT_BUFFER_SIZE);
 	}
 	close(fd);
 	return 0;
@@ -75,6 +75,29 @@ void setup_serial_struct(struct termios* port_config, int* serial_port)
 	port_config->c_cc[VTIME] = 0; /* Wait indefinetly   */
 }
 
+void setup_serial_struct_write(struct termios* port_config, int* serial_port)
+{
+tcgetattr(*serial_port, port_config); // store current attributes of the serial port into the port_config struct
+	cfsetispeed(port_config, B9600);
+	cfsetospeed(port_config, B9600);
+
+	port_config->c_cflag &= ~PARENB;   /* Disables the Parity Enable bit(PARENB),So No Parity   */
+	port_config->c_cflag &= ~CSTOPB;   /* CSTOPB = 2 Stop bits,here it is cleared so 1 Stop bit */
+	port_config->c_cflag &= ~CSIZE;	 /* Clears the mask for setting the data size             */
+	port_config->c_cflag |=  CS8;      /* Set the data bits = 8                                 */
+	
+	port_config->c_cflag &= ~CRTSCTS;       /* No Hardware flow Control                         */
+	port_config->c_cflag |= CREAD | CLOCAL; /* Enable receiver,Ignore Modem Control lines       */ 
+		
+		
+	port_config->c_iflag &= ~(IXON | IXOFF | IXANY);          /* Disable XON/XOFF flow control both i/p and o/p */
+	port_config->c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  /* Non Cannonical mode                            */
+
+	port_config->c_oflag &= ~OPOST;/*No Output Processing*/
+		
+	/* Setting Time outs */
+}	
+
 int send_buff_pic()
 {
 	return 0;
@@ -94,16 +117,16 @@ int parse_serial_command(int command)
 {
 	switch (command)
 	{
-		case TAKE_PIC:
+		case (int)TAKE_PIC:
 		take_pic(CAMERA_PATH);
 		break;
-		case REQ_PIC:
+		case (int)REQ_PIC:
 		send_buff_pic();
 		break;
-		case TEST_COMM:
+		case (int)TEST_COMM:
 		test_command();
 		break;
-		case STOP_TRANS:
+		case (int)STOP_TRANS:
 		printf("STOP TRANSMISSION CAUGHT\n");
 		break;
 		default:

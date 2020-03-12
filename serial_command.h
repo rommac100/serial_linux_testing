@@ -22,11 +22,13 @@
 #define REQ_PIC 0x09
 #define TEST_COMM 0x02 // A test protocol command
 #define STOP_TRANS 0xFF
+#define DEFAULT_BUFFER_SIZE 4 //effectively the size for 2'x00 8 bit hexadecimal number
 /*
  * Current Main Serial Device Paths
  */
 #define CAMERA_PATH "/dev/ttyS0"
 #define XBEE_PATH "/dev/ttyUSB0"
+#define BUFF_FILE "buff.jpg"
 
 int take_pic(char*);
 
@@ -37,6 +39,7 @@ int parse_serial_command(int);
 void test_command(); //simple test_command function will output simple printf stating received command for now
 
 void setup_serial_struct(struct termios*, int*); 
+void setup_serial_struct_write(struct termios*,int*);
 
 int start_listener(char *); // takes serial_path as inpu
 
@@ -44,4 +47,7 @@ typedef union serialized_data{
 	unsigned int com_int;
 	char com_char[4];
 } serial_data;
+
+
+
 #endif
