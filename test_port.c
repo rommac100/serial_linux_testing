@@ -6,10 +6,11 @@ int main(int argc, char** argv)
 	struct termios serial_settings;	
 	struct serial_device device;
 	device.serial_path = DEFAULT_SERIAL_PATH;
-	int err_code = setup_serial(&device, &serial_settings);	
-	write_byte_serial(&device, "b");
-	write_string_serial(&device, "test", 4);
-	char data[3];
-	read_serial(&device,data, 3);
+	int err_code = setup_serial_baud(&device, &serial_settings, B57600);
+	char buff[4] = {0x56, 0x00, 0x26, 0x00}; 
+	write_string_serial(&device, buff,4);
+	read_serial(&device, buff,4);
+
 	close_port_serial(&device);
+	
 }
