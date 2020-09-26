@@ -4,11 +4,19 @@ CC = gcc
 # Compiler Flags
 CFLAGS = -g -Wall 
 
-SRC = serial_oper.c test_port.c
-OUTNAME = test_serial
+DEPENDENCIES = serial_oper.c jpeg_writer.c
+SRC_TEST = test_port.c
+SRC_ISSUER = picture_issuer.c
+SRC_RECEIVER = picture_receiv.c
 
-build:
-	$(CC) $(CFLAGS) -o $(OUTNAME) $(SRC)
+build_receiver:
+	$(CC) $(CFLAGS) -o $(basename $(SRC_RECEIVER)) $(SRC_RECEIVER) $(DEPENDENCIES)
+
+build_issuer:
+	$(CC) $(CFLAGS) -o  $(basename $(SRC_ISSUER)) $(SRC_ISSUER) $(DEPENDENCIES)
+
+build_test:
+	$(CC) $(CFLAGS) -o $(basename $(SRC_TEST)) $(SRC_TEST) $(DEPENDENCIES)
 
 clean:
-	rm $(OUTNAME)
+	rm $(OUTNAME_TEST) $(OUTNAME_ISSUER)

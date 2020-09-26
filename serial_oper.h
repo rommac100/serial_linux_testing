@@ -10,6 +10,8 @@
 #include <errno.h>
 
 #define DEFAULT_SERIAL_PATH "/dev/ttyUSB0"
+
+#define MAX_SERIAL_TRANSFER 100
 struct serial_device
 {
 	int serial_port;
@@ -25,8 +27,9 @@ int setup_serial(struct serial_device*, struct termios*);
 // param: int* for the serial_port int pointer (address), char* for the data pointer
 // return: error code from writing process
 int write_byte_serial(struct serial_device*, char*);
-char read_byte_serial(struct serial_device*, char);
+int read_serial(struct serial_device*, char*, int);
 void close_port_serial(struct serial_device*);
+int write_string_serial(struct serial_device*,char*,int);
 
 
 

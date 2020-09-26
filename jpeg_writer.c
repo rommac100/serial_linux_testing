@@ -1,11 +1,4 @@
 #include "jpeg_writer.h"
-int main()
-{
-	jpg_data data;
-	open_jpg(TEST_FILE, &data);
-	write_jpg("test.jpg", &data);
-	free(data.bytes);
-}
 
 void write_jpg(char * filename, jpg_data * data)
 {
@@ -16,7 +9,7 @@ void write_jpg(char * filename, jpg_data * data)
 	if (fp)
 	{
 	int bytes_written = fwrite(data->bytes, sizeof(char), data->size,fp);
-	close(fp);
+	fclose(fp);
 	printf("\n Wrote %d bytes\n", bytes_written);
 	}
 	else
@@ -41,7 +34,7 @@ void open_jpg(char * filename, jpg_data *data)
 		data->bytes = malloc(sizeof(char)*size);
 		data->size = fread(data->bytes, sizeof(char), size, fp);
 		printf("size of data written to struct: %d\n", data->size);
-		close(fp);
+		fclose(fp);
 	}
 	else
 		printf("failed to open file");

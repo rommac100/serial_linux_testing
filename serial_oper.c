@@ -33,8 +33,8 @@ int setup_serial(struct serial_device* device, struct termios* serial_settings)
 	serial_settings->c_oflag &= ~OPOST;/*No Output Processing*/
 		
 	/* Setting Time outs */
-	serial_settings->c_cc[VMIN] = 10; /* Read at least 10 characters */
-	serial_settings->c_cc[VTIME] = 0; /* Wait indefinetly   */
+	serial_settings->c_cc[VMIN] = 105; /* Read at least 100  characters (or when the specified buffer in the read command is full)*/
+	serial_settings->c_cc[VTIME] = 0; /* Wait 10 deciseconds   */
 
 	// apply struct settings and see if an error occurs
 	if ((tcsetattr(device->serial_port,TCSANOW,serial_settings)) !=0)
@@ -54,10 +54,27 @@ int write_byte_serial(struct serial_device* device, char* data)
 	int bytes_written = 0;
 	bytes_written = write(device->serial_port,data, 1);
 
-	printf("\n %s written to %s", data, device->serial_path);
 	printf("\n %d Bytes written to %s", bytes_written, device->serial_path);
 
 	return 0;
+}
+
+int write_string_serial(struct serial_device* device, char* data, int data_size)
+{
+	tcflush(device->serial_port, TCIFLUSH); //clean out the write buffer
+	int bytes_written = 0;
+	bytes_written = write(device->serial_port,data, data_size);
+
+	printf("\n %d Bytes written to %s", bytes_written, device->serial_path);
+
+	return 0;
+}
+
+int read_serial(struct serial_device* device, char* data, int buff_length)
+{
+	int bytes_read = read(device->serial_port, data, buff_length);
+	printf("\n (%i bytes) read from %s", bytes_read, device->serial_path);
+	return bytes_read;
 }
 
 void close_port_serial(struct serial_device* device) {close(device->serial_port);}
