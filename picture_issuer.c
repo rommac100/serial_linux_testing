@@ -19,7 +19,7 @@ int main (int argc, char** argv)
 		switch(buffer)
 		{
 			case SEND_PIC_BUFF:
-				transmit_picture(&device, DEFAULT_PICTURE);
+				transmit_picture(&device, argc==3 ? argv[2] : DEFAULT_PICTURE);
 			break;
 			case TAKE_PIC:
 				take_picture(DEFAULT_PICTURE);

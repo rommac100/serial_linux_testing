@@ -5,7 +5,7 @@
 #include "serial_commands.h"
 #include "jpeg_writer.h"
 
-#define DEFAULT_PICTURE "/home/rommac/serial_linux_testing/test.jpg"
+#define DEFAULT_PICTURE "/home/rommac/serial_linux_testing/thumbnail.jpg"
 
 int start_receiver(char*);
 
