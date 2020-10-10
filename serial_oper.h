@@ -23,7 +23,7 @@ struct serial_device
 // return: the error code that it exited on
 int setup_serial(struct serial_device*, struct termios*);
 
-int setup_serial_baud(struct serial_device*, struct termios*, int baud);
+int setup_serial_baud(struct serial_device*, struct termios*, unsigned baud);
 
 // writes a byte to the data_line
 // param: int* for the serial_port int pointer (address), char* for the data pointer

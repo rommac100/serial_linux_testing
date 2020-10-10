@@ -1,6 +1,5 @@
 #include "picture_receiv.h"
 
-
 //argv[1] == serial_path
 int main (int argc, char** argv)
 {
@@ -9,7 +8,7 @@ int main (int argc, char** argv)
 	struct serial_device device;
 	device.serial_path = argv[1];
 	struct termios serial_settings;
-	int error = setup_serial(&device, &serial_settings);
+	int error = setup_serial_baud(&device, &serial_settings, B38400);
 	if (error != 0)
 		return error;
 

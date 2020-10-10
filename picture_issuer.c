@@ -8,7 +8,7 @@ int main (int argc, char** argv)
 	struct serial_device device;
 	struct termios serial_settings;
 	device.serial_path = argv[1];
-	int failcode = setup_serial(&device, &serial_settings);
+	int failcode = setup_serial_baud(&device, &serial_settings, B38400);
 	if (failcode !=0)
 		return -1;
 
@@ -35,10 +35,11 @@ void transmit_picture(struct serial_device* device, char* img_path)
 	jpg_data jpg_file;
 	open_jpg(DEFAULT_PICTURE, &jpg_file);
 	char buff[8];
+	printf("jpg_data size: %lu\n", jpg_file.size);
 	sprintf(buff, "%lu",jpg_file.size);
 	write_string_serial(device, buff,8);
 	long i,j;
-	long left_bytes = jpg_file.size-(jpg_file.size/MAX_SERIAL_TRANSFER)*MAX_SERIAL_TRANSFER;
+	long left_bytes = jpg_file.size-((jpg_file.size/MAX_SERIAL_TRANSFER)*MAX_SERIAL_TRANSFER);
 	printf("\n left_bytes: %lu", left_bytes);
 	char img_buff[MAX_SERIAL_TRANSFER];
 	for (i=0; i < jpg_file.size/MAX_SERIAL_TRANSFER; i++)
@@ -47,10 +48,15 @@ void transmit_picture(struct serial_device* device, char* img_path)
 			img_buff[j] = jpg_file.bytes[(i*MAX_SERIAL_TRANSFER)+j];
 	write_string_serial(device,img_buff,MAX_SERIAL_TRANSFER);
 	}
+	printf("\n printed bulk of the file\n");
 	if (left_bytes != 0)
 	{
+	printf("bytes left, %d\n", left_bytes);
 	for (i=0; i<left_bytes; i++)
-		img_buff[i] = jpg_file.bytes[(jpg_file.size/MAX_SERIAL_TRANSFER)*jpg_file.size+i];
+	{
+		printf("i in left_bytes: %d\n",i);
+		img_buff[i] = jpg_file.bytes[((jpg_file.size/MAX_SERIAL_TRANSFER)*MAX_SERIAL_TRANSFER)+i];
+	}
 	write_string_serial(device,img_buff,left_bytes);
 	}
 }
